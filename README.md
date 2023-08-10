@@ -1,3 +1,3 @@
 # JSONEditor
 
-A description of this package.
+Provides a view controller that can preview and edit pretty printed JSON!
