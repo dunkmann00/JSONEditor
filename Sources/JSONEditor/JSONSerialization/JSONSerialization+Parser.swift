@@ -8,11 +8,13 @@
 // See https://swift.org/LICENSE.txt for license information
 // See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 //
-// Source:
+// Source (Modified):
 // https://github.com/apple/swift-corelibs-foundation/blob/8ff7ba31420c0b71ea87984c26cd867b4bcb7c90/Sources/Foundation/JSONSerialization%2BParser.swift
 //
 //===----------------------------------------------------------------------===//
 
+import Foundation
+import OrderedCollections
 
 internal struct JSONParser {
     var reader: DocumentReader
@@ -145,7 +147,7 @@ internal struct JSONParser {
 
     // MARK: - Object parsing -
 
-    mutating func parseObject() throws -> [String: JSONValue] {
+    mutating func parseObject() throws -> OrderedDictionary<String, JSONValue> {
         precondition(self.reader.read() == ._openbrace)
         guard self.depth < 512 else {
             throw JSONError.tooManyNestedArraysOrDictionaries(characterIndex: self.reader.readerIndex - 1)
@@ -165,7 +167,7 @@ internal struct JSONParser {
             break
         }
 
-        var object = [String: JSONValue]()
+        var object = OrderedDictionary<String, JSONValue>()
         object.reserveCapacity(20)
 
         while true {
@@ -403,6 +405,7 @@ extension JSONParser {
             return str
         }
 
+        // Updated this function to return escaped versions of the escape sequences. Now they will appear in the string as text rather than being converted into escape sequences. 
         private mutating func parseEscapeSequence() throws -> String {
             precondition(self.read() == ._backslash, "Expected to have an backslash first")
             guard let ascii = self.read() else {
@@ -410,17 +413,15 @@ extension JSONParser {
             }
 
             switch ascii {
-            case 0x22: return "\""
-            case 0x5C: return "\\"
+            case 0x22: return #"\""#
+            case 0x5C: return #"\\"#
             case 0x2F: return "/"
-            case 0x62: return "\u{08}" // \b
-            case 0x66: return "\u{0C}" // \f
-            case 0x6E: return "\u{0A}" // \n
-            case 0x72: return "\u{0D}" // \r
-            case 0x74: return "\u{09}" // \t
-            case 0x75:
-                let character = try parseUnicodeSequence()
-                return String(character)
+            case 0x62: return #"\b"# // \b
+            case 0x66: return #"\f"# // \f
+            case 0x6E: return #"\n"# // \n
+            case 0x72: return #"\r"# // \r
+            case 0x74: return #"\t"# // \t
+            case 0x75: return #"\u"#
             default:
                 throw EscapedSequenceError.unexpectedEscapedCharacter(ascii: ascii, index: self.readerIndex - 1)
             }
@@ -665,4 +666,37 @@ enum JSONError: Swift.Error, Equatable {
     case numberIsNotRepresentableInSwift(parsed: String)
     case singleFragmentFoundButNotAllowed
     case invalidUTF8Sequence(Data, characterIndex: Int)
+}
+
+extension JSONError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .cannotConvertInputDataToUTF8:
+            return "Cannot convert input string to valid utf8 input."
+        case .unexpectedCharacter(let character, let characterIndex):
+            return "Invalid value \"\(Unicode.Scalar(character))\" around character \(characterIndex)."
+        case .unexpectedEndOfFile:
+            return "Unexpected end of file during JSON parse."
+        case .tooManyNestedArraysOrDictionaries(let characterIndex):
+            return "Too many nested arrays or dictionaries around character \(characterIndex + 1)."
+        case .invalidHexDigitSequence(let string, let index):
+            return #"Invalid hex encoded sequence in "\#(string)" at \#(index)."#
+        case .unexpectedEscapedCharacter(_, _, let index):
+            return "Invalid escape sequence around character \(index - 1)."
+        case .unescapedControlCharacterInString(_, _, let index):
+            return #"Invalid escape sequence around character \#(index)."#
+        case .expectedLowSurrogateUTF8SequenceAfterHighSurrogate(_, _):
+            return "Unexpected end of file during string parse (expected low-surrogate code point but did not find one)."
+        case .couldNotCreateUnicodeScalarFromUInt32(_, _, _):
+            return "Unable to convert hex escape sequence (no high character) to UTF8-encoded character."
+        case .numberWithLeadingZero(let index):
+            return #"Number with leading zero around character \#(index)."#
+        case .numberIsNotRepresentableInSwift(let parsed):
+            return #"Number \#(parsed) is not representable in Swift."#
+        case .singleFragmentFoundButNotAllowed:
+            return "JSON text did not start with array or object and option to allow fragments not set."
+        case .invalidUTF8Sequence(let data, let characterIndex):
+            return #"Invalid UTF-8 sequence \#(data) starting from character \#(characterIndex)."#
+        }
+    }
 }
