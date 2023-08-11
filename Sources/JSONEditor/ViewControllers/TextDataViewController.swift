@@ -150,3 +150,11 @@ public class TextDataViewController: UIViewController, UITextViewDelegate {
     */
 
 }
+
+//extension TextDataViewController {
+//    static func instantiate(identifier: String? = nil, creator: ((NSCoder) -> Self?)? = nil) -> Self {
+//        let className = String(describing: self)
+//        let storyboard = UIStoryboard(name: "Storyboard", bundle: Bundle.module)
+//        return storyboard.instantiateViewController(identifier: identifier ?? className, creator: creator)
+//    }
+//}
