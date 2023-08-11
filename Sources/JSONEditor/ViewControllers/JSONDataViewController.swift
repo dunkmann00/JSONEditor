@@ -120,7 +120,7 @@ public class JSONDataViewController: TextDataViewController {
     
     weak var configureTextBarButton: UIBarButtonItem!
     
-    init?(coder: NSCoder, jsonString: String? = nil, jsonData: Data? = nil) {
+    public init?(coder: NSCoder, jsonString: String? = nil, jsonData: Data? = nil) {
         var text = "⍰"
         if let jsonString = jsonString {
             text = jsonString

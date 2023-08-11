@@ -48,7 +48,7 @@ public class TextDataViewController: UIViewController, UITextViewDelegate {
     weak var wrapBarButtonItem: UIBarButtonItem!
     weak var wrapButton: UIButton!
         
-    init?(coder: NSCoder, text: String? = nil, textData: Data? = nil) {
+    public init?(coder: NSCoder, text: String? = nil, textData: Data? = nil) {
         var vcText = ""
         if let text = text {
             vcText = text
