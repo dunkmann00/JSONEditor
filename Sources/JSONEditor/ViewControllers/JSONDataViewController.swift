@@ -24,7 +24,7 @@ extension UIAction.Identifier {
     static let indentSizeValue: UIAction.Identifier = .init("com.georgeh2os.json-editor.indent-size.value")
 }
 
-class JSONDataViewController: TextDataViewController {
+public class JSONDataViewController: TextDataViewController {
     static let FONT_SIZE_KEY = "jsonValueFormatterFontSize"
     static let INDENT_SIZE_KEY = "jsonValueFormatterIndentSize"
     

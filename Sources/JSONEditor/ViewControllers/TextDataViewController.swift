@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TextDataViewController: UIViewController, UITextViewDelegate {
+public class TextDataViewController: UIViewController, UITextViewDelegate {
     
     var text: String {
         didSet {
