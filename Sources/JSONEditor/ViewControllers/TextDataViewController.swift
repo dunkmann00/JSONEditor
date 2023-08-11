@@ -151,10 +151,11 @@ public class TextDataViewController: UIViewController, UITextViewDelegate {
 
 }
 
-//extension TextDataViewController {
-//    static func instantiate(identifier: String? = nil, creator: ((NSCoder) -> Self?)? = nil) -> Self {
-//        let className = String(describing: self)
-//        let storyboard = UIStoryboard(name: "Storyboard", bundle: Bundle.module)
-//        return storyboard.instantiateViewController(identifier: identifier ?? className, creator: creator)
-//    }
-//}
+extension TextDataViewController: PackageStoryboarded {
+    static let vcIdentifier = "TextDataViewController"
+    
+    public static func instantiate(creator: ((NSCoder) -> TextDataViewController?)? = nil) -> Self {
+        let storyboard = UIStoryboard(name: "Storyboard", bundle: Bundle.module)
+        return storyboard.instantiateViewController(identifier: TextDataViewController.vcIdentifier, creator: creator) as! Self
+    }
+}
