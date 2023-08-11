@@ -154,7 +154,7 @@ public class JSONDataViewController: TextDataViewController {
         fatalError("init(coder:) is not implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         addConfigureTextBarButton()
@@ -335,7 +335,7 @@ extension JSONDataViewController: UIGestureRecognizerDelegate {
         return attributedText.characters.index(attributedText.startIndex, offsetBy: charIndex, limitedBy: attributedText.endIndex)
     }
     
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         true
     }
 }

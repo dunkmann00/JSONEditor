@@ -64,7 +64,7 @@ public class TextDataViewController: UIViewController, UITextViewDelegate {
         fatalError("init(coder:) is not implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         textView.text = text
@@ -80,7 +80,7 @@ public class TextDataViewController: UIViewController, UITextViewDelegate {
         scrollViewContainer.horizontalScrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0.1, right: 0)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
     
